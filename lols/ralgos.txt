@@ -1,0 +1,176 @@
+ 
+
+#####################################################
+# Collection of Examples of the different algorithms
+# that are available to build classification models
+# in R.
+#
+# includes:
+#
+# Logistic Regression
+# Linear Regression
+# RLM
+# Support Vector Machine
+# Decision Tree
+# Random Forests
+# Gradient Boosting Machine
+# Multivariate Adaptive Regression Splines
+#
+#####################################################
+
+
+
+
+#####################################################
+# 1. SETUP DATA
+#####################################################
+
+#clear worksace
+rm(list = ls(all = TRUE))
+
+#set working directory 
+setwd("C:/wherevever") 
+
+#load the data
+mydata <- read.csv("overfitting.csv", header=TRUE)
+colnames(mydata)
+
+#create train and test sets
+trainset = mydata[mydata$train == 1,]
+testset = mydata[mydata$train == 0,]
+
+#eliminate unwanted columns from train set
+trainset$case_id = NULL
+trainset$train = NULL
+trainset$Target_Evaluate = NULL
+#trainset$Target_Practice = NULL
+trainset$Target_Leaderboard = NULL
+
+
+#####################################################
+# 2. set the formula
+#####################################################
+theTarget <- "Target_Practice"
+theFormula <- as.formula(paste("as.factor(",theTarget, ") ~ . "))
+theFormula1 <- as.formula(paste(theTarget," ~ . "))
+trainTarget = trainset[,which(names(trainset)==theTarget)] 
+testTarget  = testset[,which(names(testset)==theTarget)]
+library(caTools) #requireed for AUC calc
+#####################################################
+
+display_results <- function(){
+train_AUC <- colAUC(train_pred,trainTarget)
+test_AUC <- colAUC(test_pred,testTarget)
+cat("\n\n***",what,"***\ntraining:",train_AUC,"\ntesting:",test_AUC,"\n*****************************\n")
+}
+
+#####################################################
+# 3. Now just apply the algorithms
+#####################################################
+
+
+#####################################################
+# Logisic Regression
+#####################################################
+what <- "Logistic Regression"
+LOGISTIC_model <- glm(theFormula, data=trainset, family=binomial(link="logit"))
+
+train_pred <- predict(LOGISTIC_model, type="response", trainset)
+test_pred <- predict(LOGISTIC_model, type="response", testset)
+
+display_results()
+
+
+#####################################################
+# Linear Regression
+#####################################################
+what <- "Linear Regression"
+LINEAR_model <- lm(theFormula1, data=trainset)
+
+train_pred <- predict(LINEAR_model, type="response", trainset)
+test_pred <- predict(LINEAR_model, type="response", testset)
+
+display_results()
+
+
+#####################################################
+# Robust Fitting of Linear Models
+#####################################################
+library(MASS)
+what <- "RLM"
+RLM_model <- rlm(theFormula1, data=trainset)
+
+train_pred <- predict(RLM_model, type="response", trainset)
+test_pred <- predict(RLM_model, type="response", testset)
+
+display_results()
+
+
+#####################################################
+# SVM
+#####################################################
+library('e1071')
+what <- "SVM"
+SVM_model <- svm(theFormula, data=trainset,type='C',kernel='linear',probability = TRUE)
+
+outTrain <- predict(SVM_model, trainset, probability = TRUE)
+outTest <- predict(SVM_model, testset, probability = TRUE)
+
+train_pred <- attr(outTrain, "probabilities")[,2]
+test_pred <- attr(outTest, "probabilities")[,2]
+
+display_results()
+
+
+#####################################################
+# Tree
+#####################################################
+library(rpart)
+what <- "TREE"
+TREE_model <- rpart(theFormula, data=trainset, method="class")
+
+train_pred <- predict(TREE_model, trainset)[,2]
+test_pred <- predict(TREE_model, testset)[,2]
+
+display_results()
+
+
+#####################################################
+# Random Forest
+#####################################################
+library(randomForest)
+what <- "Random Forest"
+FOREST_model <- randomForest(theFormula, data=trainset, ntree=50)
+
+train_pred <- predict(FOREST_model, trainset, type="prob")[,2]
+test_pred <- predict(FOREST_model, testset, type="prob")[,2]
+
+display_results()
+
+
+#####################################################
+# Gradient Boosting Machine
+#####################################################
+library(gbm)
+what <- "GBM"
+GBM_model = gbm(theFormula1,data=trainset,n.trees=50,shrinkage=0.005 ,cv.folds=10)
+best.iter <- gbm.perf(GBM_model,method="cv")
+
+train_pred <- predict.gbm(GBM_model,trainset,best.iter)
+test_pred <- predict.gbm(GBM_model,testset,best.iter)
+
+display_results()
+
+
+#####################################################
+# Multivariate Adaptive Regression Splines
+#####################################################
+
+library(earth)
+what <- "MARS (earth)"
+EARTH_model <- earth(theFormula, data=trainset)
+
+train_pred <- predict(EARTH_model, trainset)
+test_pred <- predict(EARTH_model, testset)
+
+display_results()

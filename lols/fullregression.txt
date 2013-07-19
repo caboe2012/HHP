@@ -1,0 +1,98 @@
+head(cbind(pred.y3.logbased[right.b$DaysInHospital>10],right.b$DaysInHospital[right.b$DaysInHospital > 10]),20)	
+
+head(cbind(pred.y3.logbased[pred.y3.logbased > 2],right.b$DaysInHospital[pred.y3.logbased >2]),20)
+
+longitudinal data (in bag error):
+
+>     err(pred.y3.logbased,right.b$DaysInHospital) submitted, worse
+[1] 0.444246
+before.add <- c(1,2,4,8,10:165) submitted, worse
+[1] 0.4426879
+>     err(pred.y3.logbased,right.b$DaysInHospital) 3 jul
+[1] 0.4442752
+before.add <- c(1,2,4,8,10:155)
+[1] 0.4428177
+c(1,2,4,10,11,34,38,61,68,69,78,94,95,96,97)
+[1] 0.443933 
+trunc/logdays/claims.span/numclaims/MSC2a3/EM/DSFS.claims.months/DrugCount/DSFS.drug.months submitted
+[1] 0.4439654
+
+	
+lm:
+20th goal: 0.446183
+> modelIt() # numclaims * office
+[1] 0.4476472 
+> modelIt() # added claims + span
+[1] 0.4476613
+> modelIt() # added sex*age
+[1] 0.4476675
+> modelIt()
+[1] 0.44789
+>   modelIt()
+[1] 0.4479367
+> modelIt()
+[1] 0.447942
+> modelIt() Independentlab
+[1] 0.4479697 
+> modelIt() # linearized c("GYNECA","HEART2","HIPFX","METAB3","SEPSIS")
+[1] 0.4479835
+> modelIt() # delogged HEART2
+[1] 0.4479875 
+>   err(pred.y3.logbased,right.b$DaysInHospital) # removed FLaELEC
+[1] 0.4480043
+>   err(pred.y3.logbased,right.b$DaysInHospital) #log numclaims
+[1] 0.4480222
+>   err(pred.y3.logbased,right.b$DaysInHospital) #log maxCharls
+[1] 0.4480384
+> err(pred.y3.logbased,right.b$DaysInHospital) #log vendor/PCP submitted
+[1] 0.4480447
+> err(pred.y3.logbased,right.b$DaysInHospital) # vendor 08 submitted
+[1] 0.4487225
+> err(pred.y3.logbased,right.b$DaysInHospital) # vendor 10
+[1] 0.4487534
+> err(pred.y3.logbased,right.b$DaysInHospital) # PCP 50
+[1] 0.4489351
+> err(pred.y3.logbased,right.b$DaysInHospital) # PCP 20
+[1] 0.44916
+> err(pred.y3.logbased,right.b$DaysInHospital) # DSFS
+[1] 0.4497131
+> err(pred.y3.logbased,right.b$DaysInHospital) # drug count + numrx
+[1] 0.4497178
+> err(pred.y3.logbased,right.b$DaysInHospital) # drug count
+[1] 0.449984
+> err(pred.y3.logbased,right.b$DaysInHospital) # log everything
+[1] 0.4502408
+> err(pred.y3.logbased,right.b$DaysInHospital) #log preggo em
+[1] 0.4507958
+> err(pred.y3.logbased, validation$DaysInHospital) # kitchensink-old
+[1] 0.4516876
+> err(pred.y3.logbased,right.b$DaysInHospital) # DSFS
+[1] 0.4519116
+> err(pred.y3.logbased,right.b$DaysInHospital) # removed meanCharls
+[1] 0.4521086
+> err(pred.y3.logbased,right.b$DaysInHospital) # restart, LoS, no drugs/labs
+[1] 0.4521169
+
+to beat:
+
+rf:
+>     err(pred.y3.logbased,right.b$DaysInHospital)
+[1] 0.4482239
+>     err(pred.y3.logbased,right.b$DaysInHospital)
+[1] 0.4487564
+>   err(pred.y3.logbased,right.b$DaysInHospital) #200,32,mtry=3
+[1] 0.4499051
+>   err(pred.y3.logbased,right.b$DaysInHospital) #100,32,all, mtry=15
+[1] 0.4507251
+>   err(pred.y3.logbased,right.b$DaysInHospital)
+[1] 0.4570593
+>   err(pred.y3.logbased,right.b$DaysInHospital) #400,32,all, mtry=1b
+[1] 0.458112	
+> err(pred.y3.logbased,right.b$DaysInHospital) # 50,8, 10000, allvars, test on
+[1] 0.4625365
+> err(pred.y3.logbased,right.b$DaysInHospital) # 50,8, 10000, 20:164, test off
+[1] 0.4673227
+> err(pred.y3.logbased,right.b$DaysInHospital) # 50,8, 10000, 20:164, test on
+[1] 0.4676118
+> err(pred.y3.logbased,right.b$DaysInHospital) # 10,16, 100, 20:164, test off
+[1] 0.4735088

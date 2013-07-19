@@ -1,0 +1,11 @@
+gbm - coxph
+randomforest
+rfe variable selection on subsets of variables
+lasso
+preProcess
+mysql
+sending jobs to hpc
+claims truncated fix
+DSFS disease progression
+
+gbm(kitchensink.old,data=training,distribution="gaussian",verbose=TRUE)

@@ -1,0 +1,15 @@
+malcolm gladwell blink
+
+stat estimators
+
+law of large numbers
+	unbiased estimator
+	mle
+	
+law of small sample
+
+stein james stein paradox
+
+	=> no admissible unbiased estimator
+	
+efron morris

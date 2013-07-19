@@ -1,0 +1,8 @@
+bonferroni's principle
+supervised learning
+ k-nearest neighbor
+ HMM
+unsupervised learning - clustering
+
+
+vim rc
